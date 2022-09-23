@@ -14,27 +14,6 @@ namespace AnyProp {
     export const Choice1 = AnyProp.create()
     export const Choice2 = AnyProp.create()
 }
-/**
- * Cloud portraits:
- * 
- *   0 = happy
- * 
- *   1 = stormy
- * 
- *   2 = sad
- * 
- *   3 = surprised
- * 
- * Old man portraits:
- * 
- *   0 = neutral
- * 
- *   1 = disappointed
- * 
- *   2 = shocked
- * 
- *   3 = happy
- */
 function happyEnding () {
     happy1 = createScript("Cloud", "That's right! Such a polite young man!", 0)
     happy2 = createScript("Old Man", "HaHaHa! What a flatterer. Take this flower as a token of my gratitude.", 3)
@@ -44,6 +23,9 @@ function happyEnding () {
     blockObject.setAnyProperty(happy2, AnyProp.NextPage, happy3)
     blockObject.setAnyProperty(happy3, AnyProp.NextPage, happy4)
     return happy1
+}
+function imSorry () {
+	
 }
 // microsoft/arcade-block-objects
 // 
@@ -55,17 +37,17 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 function createConversation () {
-    startScript = createScript("Old Man", "Boy, I could really use some rain. These plants need to hydrate! Hydration is SO IMPORTANT", 0)
-    nextPage = createScript("Cloud", "I gots some rain I could give ya, but you gotta prove that you're not going to use it for evil. How's that sound?", 0)
+    startScript = createScript("Mr.Kao", "It's so hot I need some water", 1)
+    nextPage = createScript("Pineapple", "You didn't pay your water bill! Now feel the thunder!", 1)
     blockObject.setAnyProperty(startScript, AnyProp.NextPage, nextPage)
-    blockObject.setStringArrayProperty(nextPage, StrArrayProp.Choices, ["I guess that makes sense", "NONE OF YOUR GAMES CLOUD"])
-    blockObject.setAnyProperty(nextPage, AnyProp.Choice1, I_guess_that_makes_sense())
-    blockObject.setAnyProperty(nextPage, AnyProp.Choice2, noneOfYourGamesCloud())
+    blockObject.setStringArrayProperty(nextPage, StrArrayProp.Choices, ["I'm an old man", "I'm sorry :("])
+    blockObject.setAnyProperty(nextPage, AnyProp.Choice1, imAnOldMan())
+    blockObject.setAnyProperty(nextPage, AnyProp.Choice2, 0)
     currentScript = startScript
 }
 function printScript (name: string, text: string, portrait: number) {
     story.queueStoryPart(function () {
-        if (name == "Old Man") {
+        if (name == "Mr.Kao") {
             character1.setImage(oldGuyPortraits[portrait])
             character1.setPosition(40, 30)
         } else {
@@ -111,12 +93,9 @@ function I_guess_that_makes_sense () {
     return makesSenseFirst
 }
 function lightningEnding () {
-    lightning1 = createScript("Cloud", "Alright, wise guy", 1)
-    lightning2 = createScript("Old Man", "AHAHAHAHAHAHAAHAHAHHA!!!!!!!!!!", 4)
-    lightning3 = createScript("Cloud", "No rain requests today, I guess!", 0)
-    blockObject.setAnyProperty(lightning1, AnyProp.NextPage, lightning2)
-    blockObject.setAnyProperty(lightning2, AnyProp.NextPage, lightning3)
-    return lightning1
+    blockObject.setAnyProperty(null, AnyProp.NextPage, 0)
+    blockObject.setAnyProperty(null, AnyProp.NextPage, 0)
+    return 0
 }
 function finalChoice () {
     FinalChoice1 = createScript("Old Man", "Well, I just need enough water for this garden here", 0)
@@ -160,12 +139,41 @@ function printCurrentScript () {
         }
     })
 }
+function imAnOldMan () {
+    oldman1 = createScript("Mr.Kao", "I'm just an old man and I spend all my money gambling, please help me. ", 3)
+    oldman2 = createScript("Pineaple", "ok, just gave me $2 and I will get you water", 3)
+    blockObject.setAnyProperty(oldman1, AnyProp.NextPage, oldman2)
+    blockObject.setStringArrayProperty(oldman2, StrArrayProp.Choices, ["Here's $2", "No money for you!"])
+    blockObject.setAnyProperty(oldman2, AnyProp.Choice1, happyEnding())
+    return oldman1
+}
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     if (choiceIndex == 0) {
         choiceIndex = 1
         updateChoices()
     }
 })
+/**
+ * Cloud portraits:
+ * 
+ *   0 = happy
+ * 
+ *   1 = stormy
+ * 
+ *   2 = sad
+ * 
+ *   3 = surprised
+ * 
+ * Old man portraits:
+ * 
+ *   0 = neutral
+ * 
+ *   1 = disappointed
+ * 
+ *   2 = shocked
+ * 
+ *   3 = happy
+ */
 function createScript (characterName: string, text: string, portrait: number) {
     newScript = blockObject.create()
     blockObject.setStringProperty(newScript, StrProp.Name, characterName)
@@ -174,22 +182,17 @@ function createScript (characterName: string, text: string, portrait: number) {
     return newScript
 }
 function livesAreAtStake () {
-    lives1 = createScript("Old Man", "LIVES ARE AT STAKE! I AM RESPONSIBLE FOR THESE PLANTS AND THEIR WATER INTAKE!!!", 2)
-    lives2 = createScript("Cloud", "Hey now! I said I was sorry! I don't make the cloud rules! Our governing body does that", 1)
-    blockObject.setAnyProperty(lives1, AnyProp.NextPage, lives2)
-    blockObject.setStringArrayProperty(lives2, StrArrayProp.Choices, ["Makes sense...", "I'm sorry..."])
-    blockObject.setAnyProperty(lives2, AnyProp.Choice1, finalChoice())
-    blockObject.setAnyProperty(lives2, AnyProp.Choice2, finalChoice())
-    return lives1
+    blockObject.setAnyProperty(null, AnyProp.NextPage, 0)
+    blockObject.setStringArrayProperty(null, StrArrayProp.Choices, ["Makes sense...", "I'm sorry..."])
+    blockObject.setAnyProperty(null, AnyProp.Choice1, finalChoice())
+    blockObject.setAnyProperty(null, AnyProp.Choice2, finalChoice())
+    return 0
 }
 function its_okay () {
-    itsOkayFirst = createScript("Old Man", "Ahhh, shucks.. It's okay! I'm sorry I yelled. We've all been there.", 0)
-    itsOkaySecond = createScript("Cloud", "You mean you were a cloud on its first day once?", 0)
-    itsOkayThird = createScript("Old Man", "No. That's ridiculous. I'm an old man, and therefore cannot fly or create lightning.", 1)
-    blockObject.setAnyProperty(itsOkayFirst, AnyProp.NextPage, itsOkaySecond)
-    blockObject.setAnyProperty(itsOkaySecond, AnyProp.NextPage, itsOkayThird)
-    blockObject.setAnyProperty(itsOkayThird, AnyProp.NextPage, I_guess_that_makes_sense())
-    return itsOkayFirst
+    blockObject.setAnyProperty(null, AnyProp.NextPage, 0)
+    blockObject.setAnyProperty(null, AnyProp.NextPage, 0)
+    blockObject.setAnyProperty(null, AnyProp.NextPage, I_guess_that_makes_sense())
+    return 0
 }
 function noneOfYourGamesCloud () {
     firstPage = createScript("Old Man", "NONE OF YOUR GAMES CLOUD! You will rain as you have done before!", 2)
@@ -202,18 +205,12 @@ function noneOfYourGamesCloud () {
 }
 let secondPage: blockObject.BlockObject = null
 let firstPage: blockObject.BlockObject = null
-let itsOkayThird: blockObject.BlockObject = null
-let itsOkaySecond: blockObject.BlockObject = null
-let itsOkayFirst: blockObject.BlockObject = null
-let lives2: blockObject.BlockObject = null
-let lives1: blockObject.BlockObject = null
 let newScript: blockObject.BlockObject = null
+let oldman2: blockObject.BlockObject = null
+let oldman1: blockObject.BlockObject = null
 let printingStuff = false
 let FinalChoice2: blockObject.BlockObject = null
 let FinalChoice1: blockObject.BlockObject = null
-let lightning3: blockObject.BlockObject = null
-let lightning2: blockObject.BlockObject = null
-let lightning1: blockObject.BlockObject = null
 let makesSenseFifth: blockObject.BlockObject = null
 let makesSenseFourth: blockObject.BlockObject = null
 let makesSenseThird: blockObject.BlockObject = null
